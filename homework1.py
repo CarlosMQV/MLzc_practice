@@ -1,4 +1,4 @@
 def pantallazo(a):
     print(a)
 
-pantallazo('Buen día')
+pantallazo('Buen día a todos')
