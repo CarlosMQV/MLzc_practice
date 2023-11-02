@@ -3,4 +3,7 @@ import numpy as np
 
 data = 'https://raw.githubusercontent.com/alexeygrigorev/mlbookcamp-code/master/chapter-02-car-price/data.csv'
 
-pd.read_csv('data.csv')
+df = pd.read_csv(data)
+
+df
+
