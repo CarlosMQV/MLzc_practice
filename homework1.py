@@ -74,23 +74,20 @@ X = [[148,24,1385],
 y = [10000,20000,15000,20050,10000,20000,15000,25000,12000]
 X = np.array(X) #matrix X
 
-ones = np.ones(X.shape[0]) #vector of ones
-X = np.column_stack([ones,X]) #add ones to X columns
-
-XTX = X.T.dot(X) #gram matrix (trasposed X dot X)
-XTX_inv = np.linalg.inv(XTX) #inverse of gram
-w_full = XTX_inv.dot(X.T).dot(y) #X.w = y -> XT.X.w = XT.y -> w = (XT.X)-1.XT.y
-
-w0 = w_full[0]
-w = w_full[1:]
-
-def linear_regression(X):
-    return X.dot(w_new)
-
-a = linear_regression(X)
-
 def train_linear_regression(X,y):
-    pass
+    
+    ones = np.ones(X.shape[0]) #vector of ones
+    X = np.column_stack([ones,X]) #add ones to X columns
+    
+    XTX = X.T.dot(X) #gram matrix (trasposed X dot X)
+    XTX_inv = np.linalg.inv(XTX) #inverse of gram
+    w_full = XTX_inv.dot(X.T).dot(y) #X.w = y -> XT.X.w = XT.y -> w = (XT.X)-1.XT.y
+    
+    return w_full[0],w_full[1:]
+
+a = train_linear_regression(X,y)
+
+
 
 
 
