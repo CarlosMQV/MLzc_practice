@@ -52,6 +52,16 @@ del df_train['msrp']
 del df_val['msrp']
 del df_test['msrp']
 
+xi = [453,11,86]
+w0 = 7.17
+w = [0.01,0.04,0.002]
 
+def linear_regression(xi):
+    n = len(xi)
+    pred = w0
+    for j in range(n):
+        pred = pred + w[j]*xi[j]
+    return pred
 
+a = linear_regression(xi)
 
