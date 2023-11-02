@@ -73,6 +73,17 @@ y_pred = w0 + X_train.dot(w) #predicted y
 sns.histplot(y_pred, color ='red', bins=50, alpha=0.5)
 sns.histplot(y_train, color ='blue', bins=50, alpha=0.5)
 
+#Function for RMSE
+
+def rmse(y,y_pred):
+    error = (y - y_pred)
+    se = error**2
+    mse = se.mean()
+    return np.sqrt(mse)
+
+rmse = rmse(y_train,y_pred)
+
+
 
 
 
