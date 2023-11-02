@@ -53,15 +53,29 @@ del df_val['msrp']
 del df_test['msrp']
 
 #Example set of values to work with linear regression
-xi = [453,11,86]
+xi = [1,453,11,86]
 w0 = 7.17
 w = [0.01,0.04,0.002]
-
 w_new = [w0] + w #add w0 at the beginning to simplify the operation
 
-def linear_regression(xi):
-    xi = [1] + xi #add 1 at the beginning to simplify the operation
-    xi = np.array(xi)
-    return xi.dot(w_new)
+#Example for multiple rows
 
-a = linear_regression(xi)
+x1  = [1,148,24,1385]
+x2  = [1,132,25,2031]
+x10 = [1,453,11,86]
+
+X = [x1,x2,x10]
+X = np.array(X)
+
+def linear_regression(X):
+    return X.dot(w_new)
+
+a = linear_regression(X)
+
+
+
+
+
+
+
+    
