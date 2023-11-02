@@ -21,9 +21,6 @@ for col in strings:
 #Plot of the price logarithms
 #sns.histplot(price_logs, bins=50)
 
-#resume of the null values by columns
-#unexisting=df.isnull().sum()
-
 n = len(df) #size of the dataset
 n_val = int(n*0.2) #size of the validation dataset (20%)
 n_test = int(n*0.2) #size of the test dataset (20%)
@@ -47,32 +44,10 @@ y_train = np.log1p(df_train.msrp.values)
 y_val = np.log1p(df_val.msrp.values)
 y_test = np.log1p(df_test.msrp.values)
 
-#Not gonna use msrp from this datasets, so we erase for security
+#Not gonna use msrp from this datasets, so we erase them
 del df_train['msrp']
 del df_val['msrp']
 del df_test['msrp']
-
-#Example set of values to work with linear regression
-xi = [1,453,11,86]
-w0 = 7.17
-w = [0.01,0.04,0.002]
-w_new = [w0] + w #add w0 at the beginning to simplify the operation
-
-#Example for multiple rows
-
-X = [[148,24,1385],
-     [132,25,2031],
-     [453,11,86],
-     [158,24,185],
-     [172,25,201],
-     [413,11,86],
-     [38,54,185],
-     [142,25,431],
-     [453,31,86]
-    ]
-
-y = [10000,20000,15000,20050,10000,20000,15000,25000,12000]
-X = np.array(X) #matrix X
 
 def train_linear_regression(X,y):
     
@@ -85,10 +60,18 @@ def train_linear_regression(X,y):
     
     return w_full[0],w_full[1:]
 
-a = train_linear_regression(X,y)
+#columns we want
+base = ['engine_hp','engine_cylinders','highway_mpg', 'city_mpg', 'popularity']
 
+#filling the NaN values with 0 and extracting the values
+X_train = df_train[base].fillna(0).values #We 
 
+w0, w = train_linear_regression(X_train, y_train)
 
+y_pred = w0 + X_train.dot(w) #predicted y
+
+sns.histplot(y_pred, color ='red', bins=50, alpha=0.5)
+sns.histplot(y_train, color ='blue', bins=50, alpha=0.5)
 
 
 
