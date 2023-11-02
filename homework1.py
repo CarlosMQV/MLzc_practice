@@ -3,4 +3,4 @@ import numpy as np
 
 data = 'https://raw.githubusercontent.com/alexeygrigorev/mlbookcamp-code/master/chapter-02-car-price/data.csv'
 
-!wget $data
+pd.read_csv('data.csv')
