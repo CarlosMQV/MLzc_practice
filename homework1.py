@@ -66,7 +66,12 @@ base = ['engine_hp','engine_cylinders','highway_mpg', 'city_mpg', 'popularity']
 
 #function for preparation of X filling missing values
 def prepare_X(df):
-    df_num = df[base]
+    df = df.copy() #for not to modify the original dataframe
+    
+    df['age']=2017-df.year #Explained in feature engineering section
+    features = base + ['age']
+    
+    df_num = df[features]
     df_num = df_num.fillna(0)
     X = df_num.values
     return X
@@ -76,8 +81,8 @@ w0, w = train_linear_regression(X_train, y_train)
 
 y_pred = w0 + X_train.dot(w) #predicted y
 
-sns.histplot(y_pred, color ='red', bins=50, alpha=0.5)
-sns.histplot(y_train, color ='blue', bins=50, alpha=0.5)
+sns.histplot(y_pred, color ='red', bins=100, alpha=0.5)
+sns.histplot(y_train, color ='blue', bins=100, alpha=0.5)
 
 #Function for RMSE
 
@@ -95,6 +100,15 @@ X_val = prepare_X(df_val)
 y_pred = w0 + X_val.dot(w)
 
 rmse_val = rmse(y_val, y_pred)
+
+#Simple feature engineering
+
+#If we calculate the max year with:
+#df_train.year.max()
+#Using a small number is better than the year
+#So we can use 2017 - df_train.year
+#So I modified the prepare_X function for this purpose
+
 
 
 
