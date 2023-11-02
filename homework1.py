@@ -63,13 +63,22 @@ def train_linear_regression(X,y):
 
 #columns we want
 base = ['engine_hp','engine_cylinders','highway_mpg', 'city_mpg', 'popularity']
-
+makes = list(df.make.value_counts().head(5).index)
 #function for preparation of X filling missing values
 def prepare_X(df):
     df = df.copy() #for not to modify the original dataframe
+    features = base.copy() #copy for using append and not modify base
     
     df['age']=2017-df.year #Explained in feature engineering section
-    features = base + ['age']
+    features.append('age')
+    
+    for v in [2,3,4]: #appending categorical values. Explained further below
+        df['num_doors_%s' % v] = (df.number_of_doors == v).astype('int')
+        features.append('num_doors_%s' % v)
+    
+    for v in makes:
+        df['make_%s' % v] = (df.make == v).astype('int')
+        features.append('make_%s' % v)
     
     df_num = df[features]
     df_num = df_num.fillna(0)
@@ -109,6 +118,15 @@ rmse_val = rmse(y_val, y_pred)
 #So we can use 2017 - df_train.year
 #So I modified the prepare_X function for this purpose
 
+#Categorical variables
+
+#for v in [2,3,4]:
+    #df_train['num_doors_%s' % v] = (df_train.number_of_doors == v).astype('int')
+#Here we create three binary columns from each category
+#Also we add this feature in the prepare_X function
+
+#We do the same with makes
+#makes = list(df.make.value_counts().head().index)
 
 
 
