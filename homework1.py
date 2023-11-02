@@ -16,7 +16,7 @@ for col in strings:
     df[col] = df[col].str.lower().str.replace(' ','_')
 
 #Get the log of prices to change the plot
-price_logs = np.log1p(df.msrp)
+#price_logs = np.log1p(df.msrp)
 
 #Plot of the price logarithms
 #sns.histplot(price_logs, bins=50)
@@ -37,17 +37,17 @@ df_train = df.iloc[idx[:n_train]] #dataframe for training
 df_val = df.iloc[idx[n_train:n_train+n_val]] #dataframe for validation
 df_test = df.iloc[idx[n_train+n_val:]] #dataframe for test
 
-#Rest index of dataframes
+#Reset index of dataframes
 df_train = df_train.reset_index(drop=True) 
 df_val = df_val.reset_index(drop=True)
 df_test = df_test.reset_index(drop=True)
 
-#Set y as array
+#Set y as array (we get the logarithms)
 y_train = np.log1p(df_train.msrp.values)
 y_val = np.log1p(df_val.msrp.values)
 y_test = np.log1p(df_test.msrp.values)
 
-#Not gonna use them, so we erase for security
+#Not gonna use msrp from this datasets, so we erase for security
 del df_train['msrp']
 del df_val['msrp']
 del df_test['msrp']
