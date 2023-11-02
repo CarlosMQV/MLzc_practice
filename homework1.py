@@ -52,16 +52,25 @@ del df_train['msrp']
 del df_val['msrp']
 del df_test['msrp']
 
+#Example set of values to work with linear regression
 xi = [453,11,86]
 w0 = 7.17
 w = [0.01,0.04,0.002]
 
-def linear_regression(xi):
+#vectorial dot function
+def dot(xi,w):
     n = len(xi)
-    pred = w0
+    res = 0.0
     for j in range(n):
-        pred = pred + w[j]*xi[j]
-    return pred
+        res = res + xi[j]*w[j]
+    return res
+
+w_new = [w0] + w #add w0 at the beginning to simplify the operation
+
+def linear_regression(xi):
+    xi = [1] + xi #add 1 at the beginning to simplify the operation 
+    return dot(xi,w_new)
 
 a = linear_regression(xi)
+
 
