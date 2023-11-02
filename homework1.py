@@ -60,17 +60,37 @@ w_new = [w0] + w #add w0 at the beginning to simplify the operation
 
 #Example for multiple rows
 
-x1  = [1,148,24,1385]
-x2  = [1,132,25,2031]
-x10 = [1,453,11,86]
+X = [[148,24,1385],
+     [132,25,2031],
+     [453,11,86],
+     [158,24,185],
+     [172,25,201],
+     [413,11,86],
+     [38,54,185],
+     [142,25,431],
+     [453,31,86]
+    ]
 
-X = [x1,x2,x10]
-X = np.array(X)
+y = [10000,20000,15000,20050,10000,20000,15000,25000,12000]
+X = np.array(X) #matrix X
+
+ones = np.ones(X.shape[0]) #vector of ones
+X = np.column_stack([ones,X]) #add ones to X columns
+
+XTX = X.T.dot(X) #gram matrix (trasposed X dot X)
+XTX_inv = np.linalg.inv(XTX) #inverse of gram
+w_full = XTX_inv.dot(X.T).dot(y) #X.w = y -> XT.X.w = XT.y -> w = (XT.X)-1.XT.y
+
+w0 = w_full[0]
+w = w_full[1:]
 
 def linear_regression(X):
     return X.dot(w_new)
 
 a = linear_regression(X)
+
+def train_linear_regression(X,y):
+    pass
 
 
 
