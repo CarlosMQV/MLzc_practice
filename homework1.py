@@ -49,6 +49,7 @@ del df_train['msrp']
 del df_val['msrp']
 del df_test['msrp']
 
+#Create a function for linear regression
 def train_linear_regression(X,y):
     
     ones = np.ones(X.shape[0]) #vector of ones
@@ -63,9 +64,14 @@ def train_linear_regression(X,y):
 #columns we want
 base = ['engine_hp','engine_cylinders','highway_mpg', 'city_mpg', 'popularity']
 
-#filling the NaN values with 0 and extracting the values
-X_train = df_train[base].fillna(0).values #We 
+#function for preparation of X filling missing values
+def prepare_X(df):
+    df_num = df[base]
+    df_num = df_num.fillna(0)
+    X = df_num.values
+    return X
 
+X_train = prepare_X(df_train) #We prepare X with the function 
 w0, w = train_linear_regression(X_train, y_train)
 
 y_pred = w0 + X_train.dot(w) #predicted y
@@ -81,8 +87,14 @@ def rmse(y,y_pred):
     mse = se.mean()
     return np.sqrt(mse)
 
-rmse = rmse(y_train,y_pred)
+rmse_train = rmse(y_train,y_pred)
 
+#Validation
+
+X_val = prepare_X(df_val)
+y_pred = w0 + X_val.dot(w)
+
+rmse_val = rmse(y_val, y_pred)
 
 
 
