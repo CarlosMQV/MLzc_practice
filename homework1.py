@@ -63,7 +63,12 @@ def train_linear_regression(X,y):
 
 #columns we want
 base = ['engine_hp','engine_cylinders','highway_mpg', 'city_mpg', 'popularity']
-makes = list(df.make.value_counts().head(5).index)
+categorical_variables = ['make','engine_fuel_type','transmission_type','driven_wheels',
+              'market_category','vehicle_size','vehicle_style']
+categories = {}
+for c in categorical_variables:
+    categories[c] = list(df[c].value_counts().head().index)
+
 #function for preparation of X filling missing values
 def prepare_X(df):
     df = df.copy() #for not to modify the original dataframe
@@ -76,9 +81,10 @@ def prepare_X(df):
         df['num_doors_%s' % v] = (df.number_of_doors == v).astype('int')
         features.append('num_doors_%s' % v)
     
-    for v in makes:
-        df['make_%s' % v] = (df.make == v).astype('int')
-        features.append('make_%s' % v)
+    for c, values in categories.items():
+        for v in values:
+            df['%s_%s' % (c,v)] = (df[c] == v).astype('int')
+            features.append('%s_%s' % (c,v))
     
     df_num = df[features]
     df_num = df_num.fillna(0)
@@ -128,6 +134,13 @@ rmse_val = rmse(y_val, y_pred)
 #We do the same with makes
 #makes = list(df.make.value_counts().head().index)
 
+#This is for general categorical variables, using a dictionary called categories
+#categorical_variables = ['make','engine_fuel_type','transmission_type','driven_wheels',
+              #'market_category','vehicle_size','vehicle_style']
+#categories = {}
+#for c in categorical_variables:
+    #categories[c] = list(df[c].value_counts().head().index)
+    
 
 
 
