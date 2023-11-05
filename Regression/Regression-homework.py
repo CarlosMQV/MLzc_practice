@@ -19,7 +19,6 @@ base = [feature for feature in feature_names if feature != "Price"]
 df = pd.read_csv(data, delimiter=',')
 df.columns = feature_names
 df = df[~(df['Price'] == 500001)]
-#sns.histplot(df.Price, bins=50)
 
 #Data processing
 
@@ -79,16 +78,12 @@ X_train = prepare_X(df_train)
 w0, w = train_linear_regression_reg(X_train, y_train,r=0.001)
 y_pred_train = w0 + X_train.dot(w)
 rmse_train = rmse(y_train,y_pred_train)
-#sns.histplot(y_pred_train, color ='red', bins=100, alpha=0.5)
-#sns.histplot(y_train, color ='blue', bins=100, alpha=0.5)
 
 #Validation
 
 X_val = prepare_X(df_val)
 y_pred_val = w0 + X_val.dot(w)
 rmse_val = rmse(y_val,y_pred_val)
-#sns.histplot(y_pred_val, color ='red', bins=100, alpha=0.5)
-#sns.histplot(y_val, color ='blue', bins=100, alpha=0.5)
 
 #Full trained model
 
@@ -98,5 +93,23 @@ X_full_train = prepare_X(df_full_train)
 y_full_train = np.concatenate([y_train,y_val])
 w0, w = train_linear_regression_reg(X_full_train, y_full_train,r=0.001)
 
+#Testing
 
+X_test = prepare_X(df_test)
+y_pred_test = w0 + X_test.dot(w)
+rmse_test = rmse(y_test,y_pred_test)
+
+#Using the model with a prediction
+
+number = 200
+house = df_test.iloc[number].to_dict()
+df_small = pd.DataFrame([house])
+X_small = prepare_X(df_small)
+y_pred_small = w0 + X_small.dot(w)
+y_pred_small = y_pred_small[0]
+predicted_price = np.expm1(y_pred_small)
+price = np.expm1(y_test[number])
+
+sns.histplot(y_pred_test, color ='red', bins=100, alpha=0.5)
+sns.histplot(y_test, color ='blue', bins=100, alpha=0.5)
 
