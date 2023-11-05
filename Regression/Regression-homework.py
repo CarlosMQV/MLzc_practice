@@ -87,6 +87,16 @@ rmse_train = rmse(y_train,y_pred_train)
 X_val = prepare_X(df_val)
 y_pred_val = w0 + X_val.dot(w)
 rmse_val = rmse(y_val,y_pred_val)
-sns.histplot(y_pred_val, color ='red', bins=100, alpha=0.5)
-sns.histplot(y_val, color ='blue', bins=100, alpha=0.5)
+#sns.histplot(y_pred_val, color ='red', bins=100, alpha=0.5)
+#sns.histplot(y_val, color ='blue', bins=100, alpha=0.5)
+
+#Full trained model
+
+df_full_train = pd.concat([df_train,df_val])
+df_full_train = df_full_train.reset_index(drop=True)
+X_full_train = prepare_X(df_full_train)
+y_full_train = np.concatenate([y_train,y_val])
+w0, w = train_linear_regression_reg(X_full_train, y_full_train,r=0.001)
+
+
 
