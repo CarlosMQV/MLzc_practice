@@ -18,7 +18,6 @@ feature_names = [
 df = pd.read_csv(data, delimiter=',')
 df.columns = feature_names
 df = df[~(df['Price'] == 500001)]
-max_price = df['Price'].max()
 sns.histplot(df.Price, bins=50)
 
 #Data processing
@@ -47,5 +46,32 @@ y_test = df_test.Price.values
 del df_train['Price']
 del df_val['Price']
 del df_test['Price']
+
+#Functions
+
+def train_linear_regression_reg(X,y,r=0.001):
+    ones = np.ones(X.shape[0])
+    X = np.column_stack([ones,X])
+    XTX = X.T.dot(X)
+    XTX = XTX + r*np.eye(XTX.shape[0])
+    XTX_inv = np.linalg.inv(XTX)
+    w_full = XTX_inv.dot(X.T).dot(y)
+    return w_full[0],w_full[1:]
+
+def prepare_X(df):
+    df = df.copy()
+    features = feature_names.copy()    
+    df_num = df[features].fillna(0)
+    X = df_num.values
+    return X
+
+def rmse(y,y_pred):
+    error = (y - y_pred)
+    se = error**2
+    mse = se.mean()
+    return np.sqrt(mse)
+
+
+
 
 
