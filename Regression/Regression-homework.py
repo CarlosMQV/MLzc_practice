@@ -15,6 +15,7 @@ feature_names = [
         "Longitude",
         "Price"
     ]
+base = [feature for feature in feature_names if feature != "Price"]
 df = pd.read_csv(data, delimiter=',')
 df.columns = feature_names
 df = df[~(df['Price'] == 500001)]
@@ -60,8 +61,7 @@ def train_linear_regression_reg(X,y,r=0.001):
 
 def prepare_X(df):
     df = df.copy()
-    feature_names.remove("Price")
-    features = feature_names.copy()    
+    features = base.copy()
     df_num = df[features]
     df_num = df_num.fillna(0)
     X = df_num.values
@@ -79,7 +79,14 @@ X_train = prepare_X(df_train)
 w0, w = train_linear_regression_reg(X_train, y_train,r=0.001)
 y_pred_train = w0 + X_train.dot(w)
 rmse_train = rmse(y_train,y_pred_train)
-sns.histplot(y_pred_train, color ='red', bins=100, alpha=0.5)
-sns.histplot(y_train, color ='blue', bins=100, alpha=0.5)
+#sns.histplot(y_pred_train, color ='red', bins=100, alpha=0.5)
+#sns.histplot(y_train, color ='blue', bins=100, alpha=0.5)
 
+#Validation
+
+X_val = prepare_X(df_val)
+y_pred_val = w0 + X_val.dot(w)
+rmse_val = rmse(y_val,y_pred_val)
+sns.histplot(y_pred_val, color ='red', bins=100, alpha=0.5)
+sns.histplot(y_val, color ='blue', bins=100, alpha=0.5)
 
