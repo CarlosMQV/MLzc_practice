@@ -137,7 +137,15 @@ X_test = prepare_X(df_test)
 y_pred = w0 + X_test.dot(w)
 rmse_test = rmse(y_test, y_pred)
 
+#Making a prediction using an example
 
+car = df_test.iloc[20].to_dict()
+df_small = pd.DataFrame([car])
+X_small = prepare_X(df_small)
+y_pred_small = w0 + X_small.dot(w)
+y_pred_small = y_pred_small[0]
+predicted_price = np.expm1(y_pred_small)
+price = np.expm1(y_test[20])
 
 
 
