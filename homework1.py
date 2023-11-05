@@ -50,12 +50,17 @@ del df_val['msrp']
 del df_test['msrp']
 
 #Create a function for linear regression
-def train_linear_regression(X,y):
+def train_linear_regression_reg(X,y,r=0.001):
     
     ones = np.ones(X.shape[0]) #vector of ones
     X = np.column_stack([ones,X]) #add ones to X columns
     
     XTX = X.T.dot(X) #gram matrix (trasposed X dot X)
+    
+    #Regularization
+    #We add a diagonal of ones by a factor r to avoid big numbers
+    XTX = XTX + r*np.eye(XTX.shape[0])
+    
     XTX_inv = np.linalg.inv(XTX) #inverse of gram
     w_full = XTX_inv.dot(X.T).dot(y) #X.w = y -> XT.X.w = XT.y -> w = (XT.X)-1.XT.y
     
@@ -91,14 +96,6 @@ def prepare_X(df):
     X = df_num.values
     return X
 
-X_train = prepare_X(df_train) #We prepare X with the function 
-w0, w = train_linear_regression(X_train, y_train)
-
-y_pred = w0 + X_train.dot(w) #predicted y
-
-sns.histplot(y_pred, color ='red', bins=100, alpha=0.5)
-sns.histplot(y_train, color ='blue', bins=100, alpha=0.5)
-
 #Function for RMSE
 
 def rmse(y,y_pred):
@@ -107,14 +104,22 @@ def rmse(y,y_pred):
     mse = se.mean()
     return np.sqrt(mse)
 
+X_train = prepare_X(df_train) #We prepare X with the function 
+
+#Obtaining w0 and w
+w0, w = train_linear_regression_reg(X_train, y_train,r=0.01)
+
+y_pred = w0 + X_train.dot(w) #predicted y
 rmse_train = rmse(y_train,y_pred)
 
 #Validation
 
 X_val = prepare_X(df_val)
 y_pred = w0 + X_val.dot(w)
-
 rmse_val = rmse(y_val, y_pred)
+
+sns.histplot(y_pred, color ='red', bins=100, alpha=0.5)
+sns.histplot(y_val, color ='blue', bins=100, alpha=0.5)
 
 #Simple feature engineering
 
