@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 #define the location of the csv
-data = 'data.csv'
+data = 'data_cars.csv'
 
 #clean columns data
 df = pd.read_csv(data)
