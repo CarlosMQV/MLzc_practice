@@ -18,7 +18,7 @@ feature_names = [
 df = pd.read_csv(data, delimiter=',')
 df.columns = feature_names
 df = df[~(df['Price'] == 500001)]
-sns.histplot(df.Price, bins=50)
+#sns.histplot(df.Price, bins=50)
 
 #Data processing
 
@@ -39,9 +39,9 @@ df_train = df_train.reset_index(drop=True)
 df_val = df_val.reset_index(drop=True)
 df_test = df_test.reset_index(drop=True)
 
-y_train = df_train.Price.values
-y_val = df_val.Price.values
-y_test = df_test.Price.values
+y_train = np.log1p(df_train.Price.values)
+y_val = np.log1p(df_val.Price.values)
+y_test = np.log1p(df_test.Price.values)
 
 del df_train['Price']
 del df_val['Price']
@@ -60,8 +60,10 @@ def train_linear_regression_reg(X,y,r=0.001):
 
 def prepare_X(df):
     df = df.copy()
+    feature_names.remove("Price")
     features = feature_names.copy()    
-    df_num = df[features].fillna(0)
+    df_num = df[features]
+    df_num = df_num.fillna(0)
     X = df_num.values
     return X
 
@@ -71,7 +73,13 @@ def rmse(y,y_pred):
     mse = se.mean()
     return np.sqrt(mse)
 
+#Training
 
-
+X_train = prepare_X(df_train)
+w0, w = train_linear_regression_reg(X_train, y_train,r=0.001)
+y_pred_train = w0 + X_train.dot(w)
+rmse_train = rmse(y_train,y_pred_train)
+sns.histplot(y_pred_train, color ='red', bins=100, alpha=0.5)
+sns.histplot(y_train, color ='blue', bins=100, alpha=0.5)
 
 
