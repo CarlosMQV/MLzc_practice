@@ -79,10 +79,10 @@ def prepare_X(df):
     df = df.copy() #for not to modify the original dataframe
     features = base.copy() #copy for using append and not modify base
     
-    df['age']=2017-df.year #Explained in feature engineering section
+    df['age']=2017-df.year #Feature engineering
     features.append('age')
     
-    for v in [2,3,4]: #appending categorical values. Explained further below
+    for v in [2,3,4]: #appending categorical values
         df['num_doors_%s' % v] = (df.number_of_doors == v).astype('int')
         features.append('num_doors_%s' % v)
     
@@ -121,31 +121,24 @@ rmse_val = rmse(y_val, y_pred)
 sns.histplot(y_pred, color ='red', bins=100, alpha=0.5)
 sns.histplot(y_val, color ='blue', bins=100, alpha=0.5)
 
-#Simple feature engineering
+#Time to make the full dataset for testing
 
-#If we calculate the max year with:
-#df_train.year.max()
-#Using a small number is better than the year
-#So we can use 2017 - df_train.year
-#So I modified the prepare_X function for this purpose
+df_full_train = pd.concat([df_train,df_val]) #one dataframe of df_train + df_val
+df_full_train = df_full_train.reset_index(drop=True) #reset the index
+X_full_train = prepare_X(df_full_train) #training X
 
-#Categorical variables
+y_full_train = np.concatenate([y_train,y_val]) #one y of y_train + y_val
 
-#for v in [2,3,4]:
-    #df_train['num_doors_%s' % v] = (df_train.number_of_doors == v).astype('int')
-#Here we create three binary columns from each category
-#Also we add this feature in the prepare_X function
+w0, w = train_linear_regression_reg(X_full_train, y_full_train,r=0.001)
 
-#We do the same with makes
-#makes = list(df.make.value_counts().head().index)
+#Testing
 
-#This is for general categorical variables, using a dictionary called categories
-#categorical_variables = ['make','engine_fuel_type','transmission_type','driven_wheels',
-              #'market_category','vehicle_size','vehicle_style']
-#categories = {}
-#for c in categorical_variables:
-    #categories[c] = list(df[c].value_counts().head().index)
-    
+X_test = prepare_X(df_test)
+y_pred = w0 + X_test.dot(w)
+rmse_test = rmse(y_test, y_pred)
+
+
+
 
 
 
