@@ -6,6 +6,8 @@ from sklearn.model_selection import train_test_split
 data = 'churn_data.csv'
 
 #Processing data
+
+#Importing and pre-processing data
 df = pd.read_csv(data)
 df.columns = df.columns.str.lower().str.replace(' ','_')
 strings = list(df.dtypes[df.dtypes == 'object'].index)
@@ -38,3 +40,28 @@ y_test = df_test.churn.values
 del df_train['churn']
 del df_val['churn']
 del df_test['churn']
+
+#Searching for specific values
+#df_full_train.isnull().sum() #-> There are no missing values
+#count = df_full_train.churn.value_counts(normalize=True) #-> For counting the number of values of each type
+global_churn_rate = df_full_train.churn.mean()
+
+#Define the numerical variables
+
+numerical = ['tenure','monthlycharges','totalcharges']
+
+categorical = ['customerid', 'gender', 'seniorcitizen', 'partner', 'dependents',
+               'phoneservice', 'multiplelines', 'internetservice','onlinesecurity',
+               'onlinebackup', 'deviceprotection', 'techsupport','streamingtv',
+               'streamingmovies', 'contract', 'paperlessbilling','paymentmethod']
+
+unique_values = df_full_train[categorical].nunique()
+
+
+
+
+
+
+
+
+
