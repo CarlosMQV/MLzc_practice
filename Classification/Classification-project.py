@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import mutual_info_score
 
 data = 'churn_data.csv'
 
@@ -53,17 +54,18 @@ categorical = ['gender', 'seniorcitizen', 'partner', 'dependents',
                'streamingmovies', 'contract', 'paperlessbilling','paymentmethod']
 unique_values = df_full_train[categorical].nunique() #For unique values into each categorical variable
 
-#Churn rate by gender
-#churn_female = df_full_train[df_full_train.gender == 'female'].churn.mean()
-#churn_male = df_full_train[df_full_train.gender == 'male'].churn.mean()
-#global_churn - churn_female
-#global_churn - churn_male
+"""Churn rate by gender
+churn_female = df_full_train[df_full_train.gender == 'female'].churn.mean()
+churn_male = df_full_train[df_full_train.gender == 'male'].churn.mean()
+global_churn - churn_female
+global_churn - churn_male"""
 
 #Partner count
-#churn_partner = df_full_train[df_full_train.partner == 'yes'].churn.mean()
-#churn_no_partner = df_full_train[df_full_train.partner == 'no'].churn.mean()
-#global_churn - churn_partner
-#global_churn - churn_no_partner
+
+"""churn_partner = df_full_train[df_full_train.partner == 'yes'].churn.mean()
+churn_no_partner = df_full_train[df_full_train.partner == 'no'].churn.mean()
+global_churn - churn_partner
+global_churn - churn_no_partner"""
 
 #This analysis for feature importance.
 
@@ -82,12 +84,18 @@ unique_values = df_full_train[categorical].nunique() #For unique values into eac
 #Each one defines the classification of risks according to what is most convenient.
 
 #Fast way of obtaining the churn substraction
-
-for c in categorical:
+"""for c in categorical:
     print(c)
     df_group = df_full_train.groupby(c).churn.agg(['mean','count'])
     df_group['diff'] = df_group['mean'] - global_churn
     df_group['ratio'] = df_group['mean'] / global_churn
     print(df_group)
     print()
-    print()
+    print()"""
+
+#Feature importance: Mutual information
+def mutual_info_churn_score(series):
+    return mutual_info_score(series, df_full_train.churn)
+mi = df_full_train[categorical].apply(mutual_info_churn_score)
+mi = mi.sort_values(ascending = False)
+
