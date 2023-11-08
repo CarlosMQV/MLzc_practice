@@ -4,6 +4,7 @@ import seaborn as sns
 import pylab as pl
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mutual_info_score
+from sklearn.feature_extraction import DictVectorizer
 
 data = 'churn_data.csv'
 
@@ -116,7 +117,6 @@ mi = mi.sort_values(ascending = False)
 #If correlation is 0, there are no effects on the other variable
 
 #Correlation between the numerical values and churn
-
 def correlation_plots(daf, variables, target, absl):
     corr = list(daf[variables].corrwith(daf[target]))
     corr = [(abs(x) if absl else x) * 100 for x in corr]
@@ -127,13 +127,13 @@ def correlation_plots(daf, variables, target, absl):
     for x, y, text_y in zip(X, Y, text_y_values):
         pl.text(x, text_y, f'{y:.2f}', ha='center', va='bottom')
     pl.ylim((0 if absl else -110), 110)
+#correlation_plots(df_full_train, numerical, 'churn', True)
 
-correlation_plots(df_full_train, numerical, 'churn', True)
-
-#Correlation between one part of tenure and churn
+#Correlation between one part of a variable and churn
 def correlation_intervals_plot(var, lim1, lim2, color):
     corr1 = 100*round(df_full_train[df_full_train[var] < lim1].churn.mean(), 2)
-    corr2 = 100*round(df_full_train[(df_full_train[var] > lim1) & (df_full_train[var] < lim2)].churn.mean(), 2)
+    corr2 = 100*round(df_full_train[(df_full_train[var] > lim1)
+                      & (df_full_train[var] < lim2)].churn.mean(), 2)
     corr3 = 100*round(df_full_train[df_full_train[var] > lim2].churn.mean(), 2)
     X = ['< %s' % lim1, '%s - %s' % (lim1, lim2), '> %s' % lim2]
     Y = [corr1, corr2, corr3]
@@ -141,6 +141,29 @@ def correlation_intervals_plot(var, lim1, lim2, color):
     for x, y in zip(X, Y):
         pl.text(x, y + 0.05, f'{y:.2f}', ha='center', va='bottom')
     pl.ylim(0, +120)
-
 #correlation_intervals_plot('tenure', 2, 12,'#9999ff') #Negative correlation
 #correlation_intervals_plot('monthlycharges', 20, 50,'#ff9999') #Positive correlation
+
+#One-hot encoding (using Scikit-Learn)
+
+#We create a dictionary
+train_dicts = df_train[categorical + numerical].to_dict(orient = 'records')
+#We create a new instance of this class
+dv = DictVectorizer(sparse=False)
+#Then we train our DictVectorizer. It means that we show it the info so it can process it.
+dv.fit(train_dicts)
+#We can get the feature names:
+dv_fn = dv.get_feature_names_out()
+#Then we transform it. We get columns of ones and zeros.
+#If there is a numerical variable, dosen't change it.
+X_train = dv.transform(train_dicts)
+
+#For the others
+val_dicts = df_val[categorical + numerical].to_dict(orient = 'records')
+X_val = dv.transform(val_dicts)
+test_dicts = df_val[categorical + numerical].to_dict(orient = 'records')
+X_test = dv.transform(test_dicts)
+
+
+
+
