@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import seaborn as sns
+import pylab as pl
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mutual_info_score
 
@@ -99,3 +100,47 @@ def mutual_info_churn_score(series):
 mi = df_full_train[categorical].apply(mutual_info_churn_score)
 mi = mi.sort_values(ascending = False)
 
+#Feature importance: Correlation
+
+#This is a way to measure dependency between two variables
+#The correlation coefficient "r" can take values between -> -1 < r < 1
+#When r < 0, if x grows, y decreases
+#When r > 0, if x grows, y grows too
+
+#When correlation is between -0.2 and 0 or 0 and 0.2, is almost unexisting
+#In that case, when one grows or decreases, the other rarely grows or decreases
+#When correlation is between -0.2 and -0.5 or 0.2 and 0.5, there is moderate correlation
+#In that case, when one grows or decreases, the other sometimes grows or decreases
+#When correlation is between -0.5 and -1 or 0.5 and 1, there is strong correlation
+#In that case, when one grows or decreases, the other often/always grows or decreases
+#If correlation is 0, there are no effects on the other variable
+
+#Correlation between the numerical values and churn
+
+def correlation_plots(daf, variables, target, absl):
+    corr = list(daf[variables].corrwith(daf[target]))
+    corr = [(abs(x) if absl else x) * 100 for x in corr]
+    X = variables
+    Y = corr
+    pl.bar(X, Y, facecolor='#ff9999', edgecolor='white')
+    text_y_values = [y + 0.05 if y >= 0 else y - 12 for y in Y]
+    for x, y, text_y in zip(X, Y, text_y_values):
+        pl.text(x, text_y, f'{y:.2f}', ha='center', va='bottom')
+    pl.ylim((0 if absl else -110), 110)
+
+correlation_plots(df_full_train, numerical, 'churn', True)
+
+#Correlation between one part of tenure and churn
+def correlation_intervals_plot(var, lim1, lim2, color):
+    corr1 = 100*round(df_full_train[df_full_train[var] < lim1].churn.mean(), 2)
+    corr2 = 100*round(df_full_train[(df_full_train[var] > lim1) & (df_full_train[var] < lim2)].churn.mean(), 2)
+    corr3 = 100*round(df_full_train[df_full_train[var] > lim2].churn.mean(), 2)
+    X = ['< %s' % lim1, '%s - %s' % (lim1, lim2), '> %s' % lim2]
+    Y = [corr1, corr2, corr3]
+    pl.bar(X, Y, facecolor=color, edgecolor='white', alpha=0.5)
+    for x, y in zip(X, Y):
+        pl.text(x, y + 0.05, f'{y:.2f}', ha='center', va='bottom')
+    pl.ylim(0, +120)
+
+#correlation_intervals_plot('tenure', 2, 12,'#9999ff') #Negative correlation
+#correlation_intervals_plot('monthlycharges', 20, 50,'#ff9999') #Positive correlation
