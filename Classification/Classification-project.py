@@ -5,6 +5,7 @@ import pylab as pl
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mutual_info_score
 from sklearn.feature_extraction import DictVectorizer
+from sklearn.linear_model import LogisticRegression
 
 data = 'churn_data.csv'
 
@@ -164,6 +165,33 @@ X_val = dv.transform(val_dicts)
 test_dicts = df_val[categorical + numerical].to_dict(orient = 'records')
 X_test = dv.transform(test_dicts)
 
+#Sigmoid function
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
 
+#Logistic regression
+model = LogisticRegression()
+model.fit(X_train, y_train)
 
+#Values of w
+w_values = model.coef_[0]
 
+#Model bias
+m_bias = model.intercept_[0]
+
+#Using the model. These are hard predictions, no probabilities are shown.
+hard_p = model.predict(X_train)
+
+#Using the model and getting probabilities. Soft predictions.
+soft_p = model.predict_proba(X_train)
+
+#We select just the 1 probabilities.
+y_pred = model.predict_proba(X_train)[:,1]
+
+#Analysis for y_val
+y_pred = model.predict_proba(X_val)[:,1]
+churn_decision = (y_pred >= 0.5)
+ids = df_val[churn_decision].customerid
+
+#Measuring accuracy
+accuracy = (y_val == churn_decision).mean()
