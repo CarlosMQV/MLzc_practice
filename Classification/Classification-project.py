@@ -193,5 +193,9 @@ y_pred = model.predict_proba(X_val)[:,1]
 churn_decision = (y_pred >= 0.5)
 ids = df_val[churn_decision].customerid
 
-#Measuring accuracy
+#Measuring the accuracy
 accuracy = (y_val == churn_decision).mean()
+
+#Model interpretation
+#Join featuers with their weights
+a1 = dict(zip(dv_fn, w_values))
