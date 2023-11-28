@@ -216,3 +216,11 @@ X_test = dv.transform(dicts_test)
 y_pred = model.predict_proba(X_test)[:,1]
 churn_decision = (y_pred >= 0.5)
 a2 = (churn_decision == y_test).mean()
+
+#Particular example
+
+a3 = 15     #customer number
+customer = dicts_test[a3]
+X_small = dv.transform([customer])
+customer_pred = model.predict_proba(X_small)[0,1]
+customer_real = y_test[a3]
