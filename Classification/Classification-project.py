@@ -208,4 +208,11 @@ y_full_train = df_full_train.churn.values
 model = LogisticRegression()
 model.fit(X_full_train, y_full_train)
 
+#Testing
 
+dicts_test = df_test[categorical+numerical].to_dict(orient = 'records')
+X_test = dv.transform(dicts_test)
+
+y_pred = model.predict_proba(X_test)[:,1]
+churn_decision = (y_pred >= 0.5)
+a2 = (churn_decision == y_test).mean()
