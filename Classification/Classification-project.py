@@ -197,5 +197,15 @@ ids = df_val[churn_decision].customerid
 accuracy = (y_val == churn_decision).mean()
 
 #Model interpretation
-#Join featuers with their weights
+#Join featueres with their weights
 a1 = dict(zip(dv_fn, w_values))
+
+#Using the model
+dicts_full_train = df_full_train[categorical + numerical].to_dict(orient = 'records')
+dv = DictVectorizer(sparse=False)
+X_full_train = dv.fit_transform(dicts_full_train)
+y_full_train = df_full_train.churn.values
+model = LogisticRegression()
+model.fit(X_full_train, y_full_train)
+
+
